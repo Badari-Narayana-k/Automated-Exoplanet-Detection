@@ -1,0 +1,75 @@
+[
+  {
+    "name": "Kepler-11b",
+    "period_truth": 10.30375,
+    "depth_truth_ppm": 310,
+    "n_transits_possible": 141.6,
+    "period_found": 10.30390,
+    "period_err_pct": 0.0014,
+    "SDE": 15.96,
+    "depth_found_ppm": 294,
+    "duration_found_hr": 4.21,
+    "odd_even_mismatch": null
+  },
+  {
+    "name": "Kepler-11c",
+    "period_truth": 13.02502,
+    "depth_truth_ppm": 790,
+    "n_transits_possible": 112.1,
+    "period_found": 13.02470,
+    "period_err_pct": 0.0025,
+    "SDE": 19.88,
+    "depth_found_ppm": 694,
+    "duration_found_hr": 4.53,
+    "odd_even_mismatch": null
+  },
+  {
+    "name": "Kepler-11d",
+    "period_truth": 22.68719,
+    "depth_truth_ppm": 940,
+    "n_transits_possible": 64.3,
+    "period_found": 22.68749,
+    "period_err_pct": 0.0013,
+    "SDE": 17.70,
+    "depth_found_ppm": 859,
+    "duration_found_hr": 5.46,
+    "odd_even_mismatch": null
+  },
+  {
+    "name": "Kepler-11e",
+    "period_truth": 31.9959,
+    "depth_truth_ppm": 1630,
+    "n_transits_possible": 45.6,
+    "period_found": 31.99596,
+    "period_err_pct": 0.0002,
+    "SDE": 21.28,
+    "depth_found_ppm": 1042,
+    "duration_found_hr": 4.13,
+    "odd_even_mismatch": null
+  },
+  {
+    "name": "Kepler-11f",
+    "period_truth": 46.68876,
+    "depth_truth_ppm": 540,
+    "n_transits_possible": 31.3,
+    "period_found": 45.37531,
+    "period_err_pct": 2.8132,
+    "SDE": 15.73,
+    "depth_found_ppm": 836,
+    "duration_found_hr": null,
+    "odd_even_mismatch": null,
+    "note": "RETRACTED as the true signal -- see docs/BUGS_AND_FINDINGS.md #3. Resolved by blind_search.py."
+  },
+  {
+    "name": "Kepler-11g",
+    "period_truth": 118.37743,
+    "depth_truth_ppm": 890,
+    "n_transits_possible": 12.3,
+    "period_found": 118.38316,
+    "period_err_pct": 0.0048,
+    "SDE": 12.21,
+    "depth_found_ppm": 906,
+    "duration_found_hr": null,
+    "odd_even_mismatch": null
+  }
+]

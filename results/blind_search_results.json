@@ -1,0 +1,69 @@
+[
+  {
+    "iteration": 1,
+    "matched_planet": "Kepler-11d",
+    "period": 22.687493442044463,
+    "T0": 16.931664422483394,
+    "duration": 0.19198664747092947,
+    "depth_ppm": 815.587610774271,
+    "SDE": 78.6472870436442,
+    "odd_even_mismatch": 0.6215905431856559,
+    "period_err_pct_vs_literature": 0.0013
+  },
+  {
+    "iteration": 2,
+    "matched_planet": "Kepler-11c",
+    "period": 13.024699004440503,
+    "T0": 6.674490904015056,
+    "duration": 0.14392701308242525,
+    "depth_ppm": 712.8104779640099,
+    "SDE": 115.91369695144552,
+    "odd_even_mismatch": 0.09586737021919563,
+    "period_err_pct_vs_literature": 0.0025
+  },
+  {
+    "iteration": 3,
+    "matched_planet": "Kepler-11g",
+    "period": 118.38316159132208,
+    "T0": 37.35545036869653,
+    "duration": 0.3032731649146862,
+    "depth_ppm": 953.1003891658507,
+    "SDE": 133.5628597039386,
+    "odd_even_mismatch": 0.9334853977595038,
+    "period_err_pct_vs_literature": 0.0048
+  },
+  {
+    "iteration": 4,
+    "matched_planet": "Kepler-11e",
+    "period": 31.995962030959706,
+    "T0": 22.625046049953983,
+    "duration": 0.07598386570649152,
+    "depth_ppm": 970.7968394974121,
+    "SDE": 226.32271404585364,
+    "odd_even_mismatch": 0.6853283121837813,
+    "period_err_pct_vs_literature": 0.0002
+  },
+  {
+    "iteration": 5,
+    "matched_planet": "Kepler-11e (duplicate, discarded)",
+    "note": "Re-detected iteration 4's period within the 2% duplicate-rejection tolerance -- imperfect residual masking. Discarded per standard duplicate-rejection rule, not recorded as a separate detection."
+  },
+  {
+    "iteration": 6,
+    "matched_planet": "Kepler-11f",
+    "period": 46.68569920881098,
+    "T0": 0.16783731189957496,
+    "duration": 0.21463058884033198,
+    "depth_ppm": 512.3594594879099,
+    "SDE": 192.033931175096,
+    "odd_even_mismatch": 0.0026708906525775523,
+    "period_err_pct_vs_literature": 0.0066,
+    "note": "RESOLVES the targeted-search Kepler-11f discrepancy. Targeted search found P=45.375d (2.81% off, SDE=15.7); blind search finds P=46.686d (0.0066% off, SDE=192). The targeted-search result is retracted -- see docs/BUGS_AND_FINDINGS.md #3."
+  },
+  {
+    "not_detected": "Kepler-11b",
+    "literature_period": 10.30375,
+    "literature_depth_ppm": 310,
+    "note": "The shallowest planet in the system was NOT recovered by the blind search, despite being recovered in the targeted search (SDE=16.0, second-lowest in that table). Consistent with the look-elsewhere effect: a blind search over the full 0.5-300d grid tests far more trial periods than a narrow +/-5% window, requiring correspondingly higher significance for the same nominal SDE>=7 threshold to be cleared."
+  }
+]

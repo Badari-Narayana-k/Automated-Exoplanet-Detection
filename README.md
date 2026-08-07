@@ -1,283 +1,100 @@
-# 🌌 Exoplanet Detection Pipeline (TLS + Multi-Planet Modeling)
+# Kepler-11 Multi-Planet Detection Pipeline: Real-Data Validation
 
-A research-oriented pipeline for detecting and analyzing exoplanets using transit photometry from Kepler data. This project implements a full workflow including light curve preprocessing, transit detection using Transit Least Squares (TLS), multi-planet identification, and habitability estimation.
+An open-source pipeline for multi-planet transit detection and joint
+Bayesian characterisation in Kepler long-cadence photometry, validated
+against **real MAST-hosted Kepler-11 photometry** (KIC 6541920, Quarters
+1–17, 58,785 cleaned cadences, 1459.5-day baseline) — not just the
+synthetic benchmark the project started with.
 
-> 📦 Datasets are not included. See [Datasets & Cache](#-datasets--cache) for setup instructions.
+**This repo's commit history is itself part of the documentation.** Rather
+than squashing everything into one commit, it's structured to show the
+actual sequence: original synthetic-only pipeline → real data ingestion →
+two real bugs found and fixed → a wrong conclusion drawn, then retracted
+once a blind search disagreed with it → an anomaly investigated and
+honestly left open. If you only read one thing before the code, read
+[`docs/BUGS_AND_FINDINGS.md`](docs/BUGS_AND_FINDINGS.md).
 
----
+## Headline results
 
-## 🚀 Features
+- **Two functional bugs found and fixed**, neither visible on synthetic
+  data: a fake TLS detector that returned a confident false positive on
+  real data, and an MCMC sampler with 0% acceptance on the real dataset.
+- **Targeted search**: all 6 known Kepler-11 planets recovered, 5/6 to
+  <0.005% period accuracy.
+- **Blind search** (no period given in advance): 5/6 planets recovered at
+  SDE 78–226. In the process, revealed that the targeted search's
+  Kepler-11f result was wrong — retracted explicitly, not silently fixed.
+- **A depth-shortfall anomaly** investigated and two hypotheses (aperture
+  dilution, revised stellar parameters) ruled out with real data; the
+  actual cause is reported as still open.
 
-* 📡 Load and process Kepler light curve FITS data (offline support)
-* 🧹 Advanced light curve cleaning and smoothing
-* 🔍 Transit detection using Transit Least Squares (TLS)
-* 🪐 Multi-planet detection with iterative masking
-* 📊 Residual diagnostics and phase-folded visualization
-* 🌍 Habitability analysis using stellar parameters
-* 📁 Export detected planets to CSV catalog
-* 📈 Interactive dashboard for visualization (Plotly + Dash)
+Full details, numbers, and the paper: [`paper/paper.pdf`](paper/paper.pdf).
 
----
-
-## 🧠 Pipeline Overview
-
-1. **Data Loading**
-
-   * Reads `.fits` light curve files from local storage
-   * Supports offline datasets to avoid server dependency
-
-2. **Preprocessing**
-
-   * Removes NaNs and outliers
-   * Normalizes and flattens the light curve
-   * Applies Savitzky-Golay smoothing
-
-3. **Transit Detection**
-
-   * Uses Transit Least Squares (TLS)
-   * Detects strongest periodic transit signals
-
-4. **Multi-Planet Detection**
-
-   * Iteratively masks detected transits
-   * Searches for additional planets in residuals
-
-5. **Post-processing**
-
-   * Computes planetary radius, orbital distance
-   * Evaluates habitability zone
-
-6. **Visualization**
-
-   * Residual diagnostics
-   * Phase-folded transit plots
-   * Interactive dashboard
-
----
-
-## ⚙️ Tech Stack
-
-* Python 3.10+
-* `lightkurve`
-* `transitleastsquares`
-* `numpy`, `pandas`, `matplotlib`
-* `scipy`
-* `astropy`
-* `astroquery`
-* `plotly`, `dash`
-
----
-
-## 📂 Project Structure
+## Repo structure
 
 ```
-Research_project/
-│
-├── code/
-│   ├── exoplanets.py          # Main pipeline
-│   ├── validation.py          # Validation logic
-│   ├── jointMultiplanet.py    # Joint modeling (MCMC)
-│
-├── datasets/
-│   └── cache/tpf/             # Local FITS files
-│
-├── outputs/
-│   └── detectedPlanets.csv    # Output catalog
-│
-└── README.md
+src/
+  exoplanets.py          preprocessing, BLS, iterative TLS peel-off (original)
+  jointMultiplanet.py    joint MCMC characterisation (original)
+  validation.py          catalog cross-matching (original)
+  config.py               pipeline configuration
+  load_real_data.py       real MAST data ingestion + per-quarter detrending
+  targeted_search.py      targeted TLS search (bug-fixed) + results
+  run_real_mcmc.py         joint MCMC fit (bug-fixed, adaptive step-size)
+  check_depth_shortfall.py investigates the depth anomaly (CROWDSAP check)
+  blind_search.py          full blind period search, no prior knowledge
+
+data/
+  README.md                how to get the real Kepler-11 FITS data
+  download_kepler11_llc_only.sh
+
+results/
+  real_tls_targeted_results.json
+  mcmcResults_real.csv
+  blind_search_results.json
+  crowdsap_by_quarter.csv
+
+paper/
+  paper.tex, paper.pdf     LaTeX manuscript + compiled PDF
+  figures/
+
+docs/
+  BUGS_AND_FINDINGS.md     full diagnostic writeup — start here
 ```
 
----
-
-## 📦 Datasets & Cache
-
-> ⚠️ **Note:** This repository does **not include datasets or cache files**.
-
-The Kepler light curve FITS files and intermediate cache data are intentionally excluded because:
-
-* 📁 They are **very large (GB-scale)**
-* 🔁 They can be **easily re-downloaded from public archives**
-* 🚫 Including them would make the repository unnecessarily heavy
-
----
-
-### 📥 How to Obtain Data
-
-You can download the required data from:
-
-* **MAST (Mikulski Archive for Space Telescopes)**
-* NASA Exoplanet Archive
-
-Or directly via Python using:
-
-```python
-import lightkurve as lk
-
-lc = lk.search_lightcurve("Kepler-11", mission="Kepler").download()
-```
-
----
-
-### 📁 Expected Directory Structure
-
-After downloading, place files like this:
-
-```id="k8x2qf"
-datasets/
-└── cache/
-    └── tpf/
-        ├── Kepler-11.fits
-        ├── Kepler-90.fits
-```
-
----
-
-### ⚡ Tip (Recommended)
-
-For faster and reproducible runs:
-
-* Use **offline FITS files** (as done in this project)
-* Avoid repeated downloads from MAST (can be slow or unstable)
-
----
-
-### 🚫 Ignored Files
-
-Make sure your `.gitignore` includes:
-
-```id="z8h3af"
-datasets/
-*.fits
-*.csv
-.cache/
-```
-
----
-
-This ensures your repo stays clean and lightweight while still being fully reproducible.
-
-
----
-
-## 🛠️ Installation
-
-### 1. Clone repository
+## Reproducing
 
 ```bash
-git clone https://github.com/your-username/exoplanet-pipeline.git
-cd exoplanet-pipeline
+python3 -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+
+# 1. Get real Kepler-11 data (see data/README.md)
+bash data/download_kepler11_llc_only.sh
+# place resulting FITS files in data/kepler11_llc/
+
+# 2. Targeted search
+python src/targeted_search.py
+
+# 3. Joint MCMC fit
+python src/run_real_mcmc.py
+
+# 4. Blind search (slow — ~2hrs on 14 cores; see docs for timing notes)
+python src/blind_search.py
+
+# 5. Depth-shortfall check (needs original MAST headers, not lightkurve's
+#    stripped .to_fits() export — see data/README.md)
+python src/check_depth_shortfall.py
 ```
 
-### 2. Install dependencies
+## What's still open
 
-```bash
-pip install lightkurve transitleastsquares astropy astroquery scipy plotly dash
-```
+- The depth-shortfall cause (Finding 5 in `docs/BUGS_AND_FINDINGS.md`).
+- The SDE-normalisation artefact behind the Kepler-11f mistake has not been
+  systematically characterized — how narrow a window triggers it, whether
+  it scales with SNR — flagged as a natural standalone follow-up.
+- Single-target validation (n=1 star). Whether these findings generalize to
+  other multi-planet systems is untested.
 
----
+## License
 
-## ▶️ Usage
-
-### Run the pipeline
-
-```bash
-python exoplanets.py
-```
-
-### Modify target stars
-
-Edit inside `exoplanets.py`:
-
-```python
-stars = ["Kepler-11"]
-```
-
----
-
-## ⚡ Performance Optimizations
-
-* Downsampling of light curves (~20x speedup)
-* Restricted period search range
-* Multi-threaded TLS execution
-* Offline FITS usage (no network dependency)
-
----
-
-## 📊 Output
-
-The pipeline generates:
-
-* `detectedPlanets.csv` containing:
-
-  * Period
-  * Transit depth
-  * Planet radius
-  * Orbital distance
-  * Habitability status
-
----
-
-## 🌍 Habitability Criteria
-
-* Based on stellar luminosity
-* Uses conservative habitable zone estimates
-* Checks if planet orbit lies within zone
-
----
-
-## ⚠️ Known Issues
-
-* TLS can be slow for very large datasets
-* FITS format variations may require preprocessing tweaks
-* MAST server instability (handled via offline mode)
-
----
-
-## 🔬 Future Work
-
-* GPU acceleration for transit search
-* Improved MCMC-based joint modeling
-* Automated dataset ingestion
-* Integration with TESS data
-* Web-based dashboard deployment
-
----
-
-## 📸 Sample Output
-
-* Phase-folded transit plots
-* Residual diagnostics
-* Multi-planet detection logs
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to open issues or submit pull requests.
-
----
-
-## 📜 License
-
-This project is open-source under the MIT License.
-
----
-
-## 👨‍💻 Author
-
-**Badari Narayana K**
-Research Focus: Exoplanet Detection, Computational Astrophysics
-
----
-
-## ⭐ Acknowledgements
-
-* NASA Kepler Mission
-* Lightkurve Team
-* Transit Least Squares (TLS) developers
-
----
-
-## 💡 Note
-
-This project is designed as a **research-grade pipeline**, not just a demo. It reflects real-world challenges like noisy data, incomplete observations, and computational constraints.
+MIT — see [LICENSE](LICENSE).
